@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Series Test</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+}
+
+.container{
+    background:white;
+    padding:30px;
+    width:600px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+h1{
+    margin-top:0;
+    color:#333;
+}
+
+#series{
+    font-size:30px;
+    font-weight:bold;
+    margin:25px 0;
+    word-wrap:break-word;
+}
+
+input{
+    width:150px;
+    padding:10px;
+    font-size:18px;
+    text-align:center;
+}
+
+button{
+    padding:10px 18px;
+    font-size:16px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.check{
+    background:#4CAF50;
+    color:white;
+}
+
+.next{
+    background:#2196F3;
+    color:white;
+}
+
+#result{
+    margin-top:15px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+#score{
+    margin-top:10px;
+    font-size:18px;
+}
+
+#pattern{
+    color:#888;
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Number Series Test</h1>
+
+    <div id="series">Loading...</div>
+
+    <input type="number" id="answer" placeholder="Your answer">
+
+    <br>
+
+    <button class="check" onclick="checkAnswer()">
+        Check Answer
+    </button>
+
+    <button class="next" onclick="generateSeries()">
+        Next Question
+    </button>
+
+    <div id="result"></div>
+
+    <div id="score">
+        Score: 0 / 0
+    </div>
+
+</div>
+
+<script>
+
+let correctAnswer = 0;
+let score = 0;
+let total = 0;
+
+function arithmeticPattern(){
+
+    let start = Math.floor(Math.random()*20)+1;
+    let diff = Math.floor(Math.random()*9)+2;
+
+    let sequence = [];
+
+    for(let i=0;i<5;i++){
+        sequence.push(start + i*diff);
+    }
+
+    return {
+        sequence,
+        answer:start + diff*5
+    };
+}
+
+function multiplicationPattern(){
+
+    let start = Math.floor(Math.random()*4)+1;
+    let multiplier = Math.floor(Math.random()*3)+2;
+
+    let sequence=[start];
+
+    for(let i=1;i<5;i++){
+        sequence.push(sequence[i-1]*multiplier);
+    }
+
+    return {
+        sequence,
+        answer:sequence[4]*multiplier
+    };
+}
+
+function squarePattern(){
+
+    let start = Math.floor(Math.random()*5)+1;
+
+    let sequence=[];
+
+    for(let i=0;i<5;i++){
+        sequence.push((start+i)*(start+i));
+    }
+
+    let next = start+5;
+
+    return {
+        sequence,
+        answer:next*next
+    };
+}
+
+function fibonacciPattern(){
+
+    let a = Math.floor(Math.random()*5)+1;
+    let b = Math.floor(Math.random()*5)+1;
+
+    let sequence=[a,b];
+
+    while(sequence.length<5){
+        sequence.push(
+            sequence[sequence.length-1] +
+            sequence[sequence.length-2]
+        );
+    }
+
+    return {
+        sequence,
+        answer:sequence[3]+sequence[4]
+    };
+}
+
+function digitStreamPattern(){
+
+    let stream="";
+
+    for(let i=1;i<=30;i++){
+        stream += i.toString();
+    }
+
+    let sequence=[];
+
+    for(let i=0;i<5;i++){
+        sequence.push(
+            Number(stream.slice(i*3,i*3+3))
+        );
+    }
+
+    return{
+        sequence,
+        answer:Number(stream.slice(15,18))
+    };
+}
+
+function mirrorPattern(){
+
+    let n = Math.floor(Math.random()*5)+1;
+
+    let sequence=[
+        Number(`${n}${n+1}`),
+        Number(`${n+1}${n}`),
+        Number(`${n+1}${n+2}`),
+        Number(`${n+2}${n+1}`),
+        Number(`${n+2}${n+3}`)
+    ];
+
+    return{
+        sequence,
+        answer:Number(`${n+3}${n+2}`)
+    };
+}
+
+const patterns=[
+    arithmeticPattern,
+    multiplicationPattern,
+    squarePattern,
+    fibonacciPattern,
+    digitStreamPattern,
+    mirrorPattern
+];
+
+function generateSeries(){
+
+    const pattern =
+        patterns[Math.floor(Math.random()*patterns.length)];
+
+    const data = pattern();
+
+    correctAnswer = data.answer;
+
+    document.getElementById("series").innerHTML =
+        data.sequence.join(" , ") + " , ?";
+
+    document.getElementById("answer").value="";
+
+    document.getElementById("result").innerHTML="";
+}
+
+function checkAnswer(){
+
+    const userAnswer =
+        Number(document.getElementById("answer").value);
+
+    if(document.getElementById("answer").value===""){
+        return;
+    }
+
+    total++;
+
+    if(userAnswer===correctAnswer){
+
+        score++;
+
+        document.getElementById("result").innerHTML =
+            "✅ Correct!";
+    }
+    else{
+
+        document.getElementById("result").innerHTML =
+            `❌ Wrong! Correct Answer = ${correctAnswer}`;
+    }
+
+    document.getElementById("score").innerHTML =
+        `Score: ${score} / ${total}`;
+}
+
+generateSeries();
+
+</script>
+
+</body>
+</html>
